@@ -50,4 +50,4 @@ function getData(category) {
     }
 }
 
-getData('Artificial intelligence')
+// getData('Artificial intelligence') - пример вызова
