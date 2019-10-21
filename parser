@@ -1,0 +1,53 @@
+function getData(category) {
+    var data = [];
+
+    var mainTable = jQuery('.table-responsive').get(0);
+
+    var checkBoxWhichActivatesCategoryDescription = jQuery(mainTable).find('td:contains("' + category + '")').siblings('td').find('input[type="checkbox"]');
+    checkBoxWhichActivatesCategoryDescription.click();
+
+    var resultsDiv = jQuery('#success');
+    if (resultsDiv.length === 1) {
+		CSRankings.updateMinimum(resultsDiv.get(0));
+        fillDataItem();
+		console.log(data);
+		document.write(JSON.stringify(data));
+    }
+
+    function fillDataItem() {
+
+        var trs = resultsDiv.find('tbody > tr');
+
+        trs.each(function (i, item) {
+			
+			var dataModel = {
+            universityName: '',
+            point1: '',
+            point2: '',
+            facultyProfessor: []
+        }
+		if (jQuery(item).parent().parent().attr('id') === 'ranking' && $(item).children('td').length !== 1) {
+			// console.log($(item));
+			dataModel.universityName = jQuery(item).find('td:nth-child(2)').text();
+			dataModel.point1 = jQuery(item).find('td:nth-child(3)').text();
+			dataModel.point2 = jQuery(item).find('td:nth-child(4)').text();
+						
+			var toggler = jQuery(item).find('td:nth-child(2)').find('span.hovertip:first-child');
+			var idOfFaculty = toggler.attr('id');
+			idOfFaculty = idOfFaculty.replace('-widget', '-faculty');
+			
+			toggler.click();
+			jQuery(document.getElementById(idOfFaculty)).find('tbody').find('td:nth-child(2)').find('small a').each(function(i, item) {
+				if ($(item).text().length > 0) {
+					dataModel.facultyProfessor.push($(item).text());
+				}				
+			});
+				
+			data.push(dataModel);
+			}
+		
+        })
+    }
+}
+
+getData('Artificial intelligence')
